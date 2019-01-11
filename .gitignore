@@ -118,3 +118,4 @@ fabric.properties
 TP_SMA_EX6.iml
 bin/madkit/bees/images/
 build.xml
+.gitignore
