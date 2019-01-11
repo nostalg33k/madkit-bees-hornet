@@ -135,7 +135,7 @@ public class Hornet extends AbstractBee {
             return;
         }
         //Je localise les abeilles
-        getLogger().info(() -> "J'ai détecté 1 proie "+ m.getSender().getRole() + m.getContent());
+        getLogger().info(() -> "J'ai détecté 1 proie "+ m.getSender().toString());
 
         if (m.getSender().getRole().equals("prey")) {
 
