@@ -22,7 +22,7 @@ import static madkit.bees.BeeLauncher.*;
 
 public class Hornet extends AbstractBee {
 
-    private static int border = 20;
+    private static int border = 0;
     private BeeInformation preyInfo = null;
     private AgentAddress prey = null;
     private HashMap<AgentAddress,BeeInformation> preys = new HashMap<>();
@@ -49,6 +49,12 @@ public class Hornet extends AbstractBee {
             }
         }
 
+        //si l'abeille sort du champ on ne la suit plus
+        else if (!isVisible(preyInfo,border)) {
+            prey = null;
+            preyInfo = null;
+        }
+
         else {
             Point preyLocation = preyInfo.getCurrentPosition();
             Point location = myInformation.getCurrentPosition();
@@ -56,24 +62,12 @@ public class Hornet extends AbstractBee {
                     killPrey(prey);
                     kill = false;
             }
-
         }
 
         super.buzz();
 
 
-        if (beeWorld != null) {
-            // check to see if the hornet hits the edge
-            final Point location = myInformation.getCurrentPosition();
-            if (location.x < border || location.x > (beeWorld.getWidth() - border)) {
-                dX = -dX;
-                location.x += (dX);
-            }
-            if (location.y < border || location.y > (beeWorld.getHeight() - border)) {
-                dY = -dY;
-                location.y += (dY);
-            }
-        }
+        stayVisible(border);
 
     }
 

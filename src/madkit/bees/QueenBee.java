@@ -48,40 +48,27 @@ public class QueenBee extends AbstractBee {
 
     @Override
     protected void buzz() {
-	Message m = nextMessage();
+		Message m = nextMessage();
 
-	if (m != null) {
-		if (m.getSender().getRole().equals("hornet")) {
-			kill = true;
-			Timer timer = new Timer(true);
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-				}
-			}, 3000);
-			getLogger().info(() -> "Je meurs ");
-			killAgent(this);
-		}
-		else {
-			sendReply(m, new ObjectMessage<>(myInformation));
-		}
-	}
-
-	super.buzz();
-
-
-		if (beeWorld != null) {
-			// check to see if the queen hits the edge
-			final Point location = myInformation.getCurrentPosition();
-			if (location.x < border || location.x > (beeWorld.getWidth() - border)) {
-			dX = -dX;
-			location.x += (dX);
+		if (m != null) {
+			if (m.getSender().getRole().equals("hornet")) {
+				kill = true;
+				Timer timer = new Timer(true);
+				timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+					}
+				}, 3000);
+				getLogger().info(() -> "Je meurs ");
+				killAgent(this);
 			}
-			if (location.y < border || location.y > (beeWorld.getHeight() - border)) {
-			dY = -dY;
-			location.y += (dY);
+			else {
+				sendReply(m, new ObjectMessage<>(myInformation));
 			}
 		}
+
+		super.buzz();
+		stayVisible(border);
     }
 
 

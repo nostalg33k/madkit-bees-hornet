@@ -66,19 +66,6 @@ public class Bee extends AbstractBee {
     public void buzz() {
     	updateLeader();
 		super.buzz();
-
-		if (beeWorld != null) {
-			// check to see if the bee hits the edge
-			final Point location = myInformation.getCurrentPosition();
-			if (location.x < border || location.x > (beeWorld.getWidth() - border)) {
-				dX = -dX;
-				location.x += (dX);
-			}
-			if (location.y < border || location.y > (beeWorld.getHeight() - border)) {
-				dY = -dY;
-				location.y += (dY);
-			}
-		}
     }
 
     /**

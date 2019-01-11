@@ -103,6 +103,28 @@ public abstract class AbstractBee extends AbstractAgent {
 	return generator.nextInt(val * 2 + 1) - val;
     }
 
+    protected boolean isVisible(BeeInformation infos,int border){
+        final Point location = infos.getCurrentPosition();
+        if (location.x < border || location.x > beeWorld.getWidth() - border ) {
+            return false;
+        }
+        else return !( location.y < border || location.y > (beeWorld.getHeight() - border) ) ;
+    }
+
+    protected void stayVisible(int border){
+        if (beeWorld != null) {
+            // check to see if the queen hits the edge
+            final Point location = myInformation.getCurrentPosition();
+            if (location.x < border || location.x > (beeWorld.getWidth() - border)) {
+                dX = -dX;
+                location.x += (dX);
+            }
+            if (location.y < border || location.y > (beeWorld.getHeight() - border)) {
+                dY = -dY;
+                location.y += (dY);
+            }
+        }
+    }
 }
 
 class BeeInformation {
@@ -149,5 +171,6 @@ class BeeInformation {
     public void setBeeColor(Color beeColor) {
 	this.beeColor = beeColor;
     }
+
 
 }
