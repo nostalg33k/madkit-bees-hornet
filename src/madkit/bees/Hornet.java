@@ -22,11 +22,11 @@ import static madkit.bees.BeeLauncher.*;
 
 public class Hornet extends AbstractBee {
 
-    static int border = 20;
-    BeeInformation preyInfo = null;
-    AgentAddress prey = null;
-    HashMap<AgentAddress,BeeInformation> preys = new HashMap<>();
-    boolean kill = false;
+    private static int border = 20;
+    private BeeInformation preyInfo = null;
+    private AgentAddress prey = null;
+    private HashMap<AgentAddress,BeeInformation> preys = new HashMap<>();
+    private boolean kill = false;
 
 
     public void activate() {
@@ -52,7 +52,7 @@ public class Hornet extends AbstractBee {
         else {
             Point preyLocation = preyInfo.getCurrentPosition();
             Point location = myInformation.getCurrentPosition();
-            if ( (abs(preyLocation.y - location.y) < 2) || (abs(preyLocation.x - location.x) < 2) ) {
+            if ( preyLocation.distance( location.x,location.y) < 2 ) {
                     killPrey(prey);
                     kill = false;
             }
@@ -148,12 +148,12 @@ public class Hornet extends AbstractBee {
         Set<Map.Entry<AgentAddress,BeeInformation>> setHm = preys.entrySet();
         Iterator<Map.Entry<AgentAddress,BeeInformation>> it = setHm.iterator();
 
-        Point prey1Location = null;
+        Point prey1Location;
         final Point location = myInformation.getCurrentPosition();
 
-        Map.Entry<AgentAddress,BeeInformation> bee = null;
-        int beeDistance;
-        int minDistance = 0;
+        Map.Entry<AgentAddress,BeeInformation> bee;
+        double beeDistance;
+        double minDistance = 0;
         AgentAddress closestBee = null;
 
         //Je selectionne une abeille avec la plus petite distance
@@ -163,13 +163,13 @@ public class Hornet extends AbstractBee {
                 bee = it.next();
                 closestBee = bee.getKey();
                 prey1Location = bee.getValue().getCurrentPosition();
-                minDistance = Integer.min( prey1Location.x - location.x,prey1Location.y - location.y);
+                minDistance = prey1Location.distance( location.x,location.y);
             }
 
             else {
                 bee = it.next();
                 prey1Location = bee.getValue().getCurrentPosition();
-                beeDistance = Integer.min(prey1Location.x - location.x, prey1Location.y - location.y);
+                beeDistance = prey1Location.distance( location.x,location.y);
 
                 if (beeDistance < minDistance) {
                     closestBee = bee.getKey();
