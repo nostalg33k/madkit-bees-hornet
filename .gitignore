@@ -113,9 +113,7 @@ fabric.properties
 .idea/httpRequests
 
 .classpath
-.idea/inspectionProfiles/
-.idea/misc.xml
-.idea/modules.xml
+.idea/
 .project
 TP_SMA_EX6.iml
 bin/madkit/bees/images/
