@@ -65,7 +65,7 @@ public class Hornet extends AbstractBee {
         }
 
         super.buzz();
-
+        getKilled();
 
         stayVisible(border);
 
@@ -198,6 +198,44 @@ public class Hornet extends AbstractBee {
             }, 3000);
 
         }
+
+    }
+
+    private void getKilled() {
+        Set<Map.Entry<AgentAddress,BeeInformation>> setHm = preys.entrySet();
+        Iterator<Map.Entry<AgentAddress,BeeInformation>> it = setHm.iterator();
+
+        Point preyLocation;
+        final Point location = myInformation.getCurrentPosition();
+        Map.Entry<AgentAddress,BeeInformation> bee;
+
+        int i = 0;
+
+        while(it.hasNext())
+        {
+            bee = it.next();
+            preyLocation = bee.getValue().getCurrentPosition();
+
+            if ( preyLocation.distance( location.x,location.y) < 20){
+                i++;
+            }
+
+            if (i == 7) {
+                kill = true;
+                Timer timer = new Timer(true);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                    }
+                }, 5000);
+                getLogger().info(() -> "Je meurs ");
+                killAgent(this);
+                break;
+            }
+        }
+
+
+
 
     }
 
