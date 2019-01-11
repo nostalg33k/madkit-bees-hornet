@@ -23,6 +23,8 @@ import static java.lang.Thread.sleep;
 import static madkit.bees.BeeLauncher.*;
 
 import java.awt.Point;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import madkit.bees.AbstractBee;
 import madkit.kernel.Message;
@@ -42,6 +44,7 @@ public class QueenBee extends AbstractBee {
      */
     private static final long serialVersionUID = -6999130646300839798L;
     static int border = 20;
+	boolean kill = false;
 
     @Override
     protected void buzz() {
@@ -49,12 +52,14 @@ public class QueenBee extends AbstractBee {
 
 	if (m != null) {
 		if (m.getSender().getRole().equals("hornet")) {
+			kill = true;
+			Timer timer = new Timer(true);
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+				}
+			}, 3000);
 			getLogger().info(() -> "Je meurs ");
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			killAgent(this);
 		}
 		else {
@@ -92,6 +97,7 @@ public class QueenBee extends AbstractBee {
     @Override
     protected void end() {
 		broadcastMessage(COMMUNITY, SIMU_GROUP, FOLLOWER_ROLE, new ObjectMessage<>(myInformation));
+		broadcastMessage(COMMUNITY, SIMU_GROUP, "hornet", new ObjectMessage<>(myInformation));
     }
 
     @Override
@@ -104,6 +110,7 @@ public class QueenBee extends AbstractBee {
 
     @Override
     protected void computeNewVelocities() {
+		if (kill) { dX=0; dY =0; return;}
 	if (beeWorld != null) {
 	    int acc = beeWorld.getQueenAcceleration().getValue();
 	    dX += randomFromRange(acc);

@@ -20,6 +20,8 @@ package madkit.bees;
 
 import java.awt.Point;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 
 import madkit.bees.AbstractBee;
@@ -47,6 +49,7 @@ public class Bee extends AbstractBee {
     BeeInformation leaderInfo = null;
     AgentAddress leader = null;
 	static int border = 20;
+	boolean kill = false;
 
     @Override
     public void activate() {
@@ -87,12 +90,14 @@ public class Bee extends AbstractBee {
 			return;
 	}
 	if (m.getSender().getRole().equals("hornet")){
+		kill = true;
+		Timer timer = new Timer(true);
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+			}
+		}, 3000);
 		getLogger().info(() -> "Je meurs ");
-		try {
-			sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		killAgent(this);
 	}
 	else if (m.getSender().equals(leader)) {// leader quitting
@@ -122,6 +127,7 @@ public class Bee extends AbstractBee {
 
     @Override
     protected void computeNewVelocities() {
+		if (kill) { dX=0; dY =0; return;}
 	final Point location = myInformation.getCurrentPosition();
 	// distances from bee to queen
 	int dtx;
@@ -158,4 +164,9 @@ public class Bee extends AbstractBee {
 	}
 	return 0;
     }
+
+	@Override
+	protected void end() {
+		broadcastMessage(COMMUNITY, SIMU_GROUP, "hornet", new ObjectMessage<>(myInformation));
+	}
 }

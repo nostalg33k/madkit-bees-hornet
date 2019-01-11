@@ -26,6 +26,7 @@ public class Hornet extends AbstractBee {
     BeeInformation preyInfo = null;
     AgentAddress prey = null;
     HashMap<AgentAddress,BeeInformation> preys = new HashMap<>();
+    boolean kill = false;
 
 
     public void activate() {
@@ -52,11 +53,8 @@ public class Hornet extends AbstractBee {
             Point preyLocation = preyInfo.getCurrentPosition();
             Point location = myInformation.getCurrentPosition();
             if ( (abs(preyLocation.y - location.y) < 2) || (abs(preyLocation.x - location.x) < 2) ) {
-                try {
                     killPrey(prey);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    kill = false;
             }
 
         }
@@ -89,6 +87,7 @@ public class Hornet extends AbstractBee {
 
     @Override
     protected void computeNewVelocities() {
+        if (kill) { dX=0; dY =0;  return;}
         if (beeWorld != null) {
             int acc = beeWorld.getHornetAcceleration().getValue();
             dX += randomFromRange(acc);
@@ -189,15 +188,21 @@ public class Hornet extends AbstractBee {
 
     }
 
-    private void killPrey(AgentAddress bee) throws InterruptedException {
+    private void killPrey(AgentAddress bee) {
         if (sendMessageWithRole(bee, new ObjectMessage<>(myInformation),"hornet") == ReturnCode.SUCCESS){
-            getLogger().info(() -> "Je tue ");
-            preys.remove(bee);
-            prey = null;
-            preyInfo = null;
-        }
-        else {
-            getLogger().info(() -> "Pas tuée ");
+            kill = true;
+            Timer timer = new Timer(true);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    getLogger().info(() -> "Je tue ");
+                    preys.remove(bee);
+                    prey = null;
+                    preyInfo = null;
+                    kill = false;
+                }
+            }, 3000);
+
         }
 
     }
