@@ -27,6 +27,7 @@ public class Hornet extends AbstractBee {
     private AgentAddress prey = null;
     private HashMap<AgentAddress,BeeInformation> preys = new HashMap<>();
     private boolean kill = false;
+    private boolean attack = true;
 
 
     public void activate() {
@@ -58,7 +59,7 @@ public class Hornet extends AbstractBee {
         else {
             Point preyLocation = preyInfo.getCurrentPosition();
             Point location = myInformation.getCurrentPosition();
-            if ( preyLocation.distance( location.x,location.y) < 2 ) {
+            if ( preyLocation.distance( location.x,location.y) < 2 && attack ) {
                     killPrey(prey);
                     kill = false;
             }
@@ -220,18 +221,9 @@ public class Hornet extends AbstractBee {
                 i++;
             }
 
-            if (i == 7) {
-                kill = true;
-                Timer timer = new Timer(true);
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                    }
-                }, 5000);
-                getLogger().info(() -> "Je meurs ");
-                killAgent(this);
-                break;
-            }
+
+            attack = (i < 4);
+
         }
 
 
