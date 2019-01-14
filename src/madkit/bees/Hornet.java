@@ -43,14 +43,13 @@ public class Hornet extends AbstractBee {
 
     @Override
     public void buzz() {
+        super.buzz();
+        stayVisible(border);
+
         getPreys();
 
         if (prey == null && preyInfo == null) {
-            try {
-                updatePrey();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            updatePrey();
         }
 
         //si l'abeille sort du champ on ne la suit plus
@@ -63,15 +62,12 @@ public class Hornet extends AbstractBee {
             Point preyLocation = preyInfo.getCurrentPosition();
             Point location = myInformation.getCurrentPosition();
             if ( preyLocation.distance( location.x,location.y) < ATTACK_DISTANCE && attack ) {
-                    killPrey(prey);
-                    kill = false;
+                killPrey(prey);
+                kill = false;
             }
         }
 
-        super.buzz();
         getKilled();
-
-        stayVisible(border);
 
     }
 
@@ -121,7 +117,7 @@ public class Hornet extends AbstractBee {
         dY += ((dty * acc) / dist) + randomFromRange(2);
     }
 
-    private void followNewPrey(AgentAddress a ,BeeInformation b) throws InterruptedException {
+    private void followNewPrey(AgentAddress a ,BeeInformation b) {
         preyInfo = b;
         prey = a;
     }
@@ -139,7 +135,7 @@ public class Hornet extends AbstractBee {
         }
     }
 
-    private void updatePrey() throws InterruptedException {
+    private void updatePrey() {
 
         Set<Map.Entry<AgentAddress,BeeInformation>> setHm = preys.entrySet();
         Iterator<Map.Entry<AgentAddress,BeeInformation>> it = setHm.iterator();
