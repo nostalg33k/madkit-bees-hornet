@@ -83,9 +83,9 @@ public class Bee extends AbstractBee {
 			@Override
 			public void run() {
 				getLogger().info(() -> "Je meurs ");
-				killAgent(Bee.this);
 			}
 		}, 3000);
+		killAgent(Bee.this);
 	}
 	else if (m.getSender().equals(leader)) {// leader quitting
 	    leader = null;
@@ -154,6 +154,6 @@ public class Bee extends AbstractBee {
 
 	@Override
 	protected void end() {
-		broadcastMessage(COMMUNITY, SIMU_GROUP, "hornet", new ObjectMessage<>(myInformation));
+
 	}
 }

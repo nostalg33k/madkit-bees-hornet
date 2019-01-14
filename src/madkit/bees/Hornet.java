@@ -29,20 +29,23 @@ public class Hornet extends AbstractBee {
     private boolean kill = false;
     private boolean attack = true;
 
+    private static final int ATTACK_DISTANCE = 2;
+    private static final int NOATTACK_NB_OF_BEES = 4;
+    private static final int KILLED_DISTANCE = 20;
+    private static final int KILLED_NB_OF_BEES = 7;
+
 
     public void activate() {
         requestRole(COMMUNITY, SIMU_GROUP, "hornet", null);
         requestRole(COMMUNITY, SIMU_GROUP, BEE_ROLE, null);
-        //requestRole(COMMUNITY, SIMU_GROUP, FOLLOWER_ROLE, null);
         myInformation.setBeeColor(Color.red);
-        //broadcastMessage(COMMUNITY, SIMU_GROUP, "prey", new ObjectMessage<>(myInformation));
     }
 
     @Override
     public void buzz() {
         getPreys();
 
-        if (prey == null) {
+        if (prey == null && preyInfo == null) {
             try {
                 updatePrey();
             } catch (InterruptedException e) {
@@ -59,7 +62,7 @@ public class Hornet extends AbstractBee {
         else {
             Point preyLocation = preyInfo.getCurrentPosition();
             Point location = myInformation.getCurrentPosition();
-            if ( preyLocation.distance( location.x,location.y) < 2 && attack ) {
+            if ( preyLocation.distance( location.x,location.y) < ATTACK_DISTANCE && attack ) {
                     killPrey(prey);
                     kill = false;
             }
@@ -130,10 +133,8 @@ public class Hornet extends AbstractBee {
             return;
         }
         //Je localise les abeilles
-        getLogger().info(() -> "J'ai détecté 1 proie "+ m.getSender().toString());
-
         if (m.getSender().getRole().equals("prey")) {
-
+            getLogger().info(() -> "J'ai détecté 1 proie "+ m.getSender().toString());
             preys.put(m.getSender(),m.getContent());
         }
     }
@@ -173,13 +174,9 @@ public class Hornet extends AbstractBee {
             }
 
         }
-
-        prey = closestBee;
-        preyInfo = preys.get(closestBee);
-
         //Je la follow jusqu'à la mort
 
-        followNewPrey(prey,preyInfo);
+        followNewPrey(closestBee,preys.get(closestBee));
 
     }
 
@@ -217,15 +214,15 @@ public class Hornet extends AbstractBee {
             bee = it.next();
             preyLocation = bee.getValue().getCurrentPosition();
 
-            if ( preyLocation.distance( location.x,location.y) < 20){
+            if ( preyLocation.distance( location.x,location.y) < KILLED_DISTANCE){
                 i++;
             }
 
-            attack = (i < 4);
+            attack = (i < NOATTACK_NB_OF_BEES);
 
         }
 
-        if (i >= 7){
+        if (i >= KILLED_NB_OF_BEES){
             kill = true;
             Timer timer = new Timer(true);
             timer.schedule(new TimerTask() {
