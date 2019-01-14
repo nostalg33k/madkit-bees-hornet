@@ -82,10 +82,10 @@ public class Bee extends AbstractBee {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				getLogger().info(() -> "Je meurs ");
+				killAgent(Bee.this);
 			}
 		}, 3000);
-		getLogger().info(() -> "Je meurs ");
-		killAgent(this);
 	}
 	else if (m.getSender().equals(leader)) {// leader quitting
 	    leader = null;

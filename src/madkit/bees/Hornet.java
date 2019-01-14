@@ -221,13 +221,22 @@ public class Hornet extends AbstractBee {
                 i++;
             }
 
-
             attack = (i < 4);
 
         }
 
+        if (i >= 7){
+            kill = true;
+            Timer timer = new Timer(true);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    getLogger().info(() -> "Je meurs ");
+                    killAgent(Hornet.this);
+                }
+            }, 5000);
 
-
+        }
 
     }
 
